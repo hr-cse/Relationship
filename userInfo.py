@@ -1,15 +1,13 @@
-# from titlecase import titlecase
-userDictionary  = {}
+userDictionary = {}
 relationDictionary = {}
-incrementalVariableForID = 1
+index = 1
 relation = []
 
 
-
-def addUser(name, gender, incrementalVariableForID):
-    userID = name + str(incrementalVariableForID);
-    userDictionary[userID.lower()] = [name, gender]
-    return userID
+def addUser(name="", gender="", index=""):
+    ID = name.lower() + str(index);
+    userDictionary[ID.lower()] = [name, gender]
+    return ID
 
 
 def queryInfo(id, who):
@@ -23,65 +21,120 @@ def queryInfo(id, who):
         nameID = relation[1]
         name = userDictionary[nameID][0]
 
-    else:
+    elif who == 'g':
         nameID = relation[2]
         name = userDictionary[nameID][0]
+
+    elif who == 's':
+        nameID = relation[3]
+        name = userDictionary[nameID][0]
+
+    else:
+        pass
 
     return str(userName).title(), str(name).title()
 
 
+def updateRelation(id, who, personID):
+    if who == "f":
+        relationDictionary[id][0] = personID
+    elif who == "m":
+        relationDictionary[id][1] = personID
+    elif who == "g":
+        relationDictionary[id][2] = personID
+    else:
+        relationDictionary[id][3] = personID
+
+
+def allInfo():
+    print(userDictionary)
+    print(relationDictionary)
+
+
 if __name__ == "__main__":
     while True:
-        addOrQuery = input("Add Info Or Query? (A/Q): ")
+
+        addOrQuery = input("Add Info or Query or Update? (A/Q/U): ")
 
         if addOrQuery.lower() == "a":
             userName = input("Enter your Name: ")
             gender = input("Enter Gender(M/F): ")
-            userReturnId = addUser(userName, gender, incrementalVariableForID)
-            incrementalVariableForID = incrementalVariableForID + 1
-            print("Your User Id: " + userReturnId)
+            userReturnId = addUser(userName, gender, index)
+            index = index + 1
+            #print("Your User Id: " + userReturnId)
 
             reply = input("Do you want add parent? (y/n): ")
             if reply == 'y':
                 name = input("Enter User Father Name: ")
                 gender = 'm'
-                fatherReturnID = addUser(name, gender, incrementalVariableForID)
-                incrementalVariableForID = incrementalVariableForID + 1
+                fatherReturnID = addUser(name, gender, index)
+                index = index + 1
 
                 name = input("Enter User Mother Name: ")
                 gender = 'f'
-                motherReturnID = addUser(name, gender, incrementalVariableForID)
-                incrementalVariableForID = incrementalVariableForID + 1
+                motherReturnID = addUser(name, gender, index)
+                index = index + 1
 
                 name = input("Enter User GrandFather Name: ")
                 gender = 'f'
-                grandFatherReturnID = addUser(name, gender, incrementalVariableForID)
-                incrementalVariableForID = incrementalVariableForID + 1
+                grandFatherReturnID = addUser(name, gender, index)
+                index = index + 1
 
+                name = input("Enter User Son Name: ")
+                gender = input("Enter Gender(M/F): ")
+                sonReturnID = addUser(name, gender, index)
+                index = index + 1
 
-                relationDictionary[ userReturnId ]= [fatherReturnID, motherReturnID, grandFatherReturnID]
-
+                relationDictionary[userReturnId] = [fatherReturnID, motherReturnID, grandFatherReturnID, sonReturnID]
+                relationDictionary[fatherReturnID] = [grandFatherReturnID, "", "", userReturnId]
+                relationDictionary[motherReturnID] = ["", "", "", userReturnId]
+                relationDictionary[grandFatherReturnID] = ["", "", "", fatherReturnID]
 
             else:
                 pass
 
-            newOne = input("do you want add another Info or query? (a/q): ")
-            if newOne == 'a':
+            newOne = input("Add Info or Query or Update? (A/Q/U): ")
+            if newOne.lower() == 'a':
                 continue
-            else:
+            elif newOne.lower() == "q":
+                allInfo()
                 searchingUserId = input("Enter Your userID: ")
-                whichOne = input("Which One you want to show? Father or Mother or GrandFather (F/M/G): ")
+                whichOne = input("Which One you want to show? Father, Mother, GrandFather or son?  (F/M/G/S): ")
                 print(queryInfo(searchingUserId.lower(), whichOne.lower()))
 
-        else:
+            elif newOne.lower() == "u":
+                allInfo()
+                searchingUserId = input("Enter Your userID: ")
+                whichOne = input("Which One you want to update? Father, Mother, GrandFather or son?  (F/M/G/S): ")
+                personName = input("Enter Name: ")
+                personReturnID = addUser(personName, whichOne, index)
+                index = index + 1
+
+                updateRelation(searchingUserId.lower(), whichOne.lower(), personReturnID)
+                print("OK , successfully update!")
+                continue
+            else:
+                pass
+
+        elif addOrQuery.lower() == "q":
+            allInfo()
             searchingUserId = input("Enter Your userID: ")
-            whichOne = input("Which One you want to show? Father or Mother(F/M): ")
+            whichOne = input("Which One you want to show? Father, Mother, GrandFather or son?  (F/M/G/S): ")
             print(queryInfo(searchingUserId.lower(), whichOne.lower()))
 
 
+        elif addOrQuery.lower() == "u":
+            allInfo()
+            searchingUserId = input("Enter Your userID: ")
+            whichOne = input("Which One you want to update? Father, Mother, GrandFather or son?  (F/M/G/S): ")
+            personName = input("Enter Name: ")
+            personReturnID = addUser(personName, whichOne, index)
+            index = index + 1
+
+            updateRelation(searchingUserId.lower(), whichOne.lower(), personReturnID)
+            print("OK , successfully update!")
+        else:
+            pass
 
 
 
-#
-# print(userDictionary)
-# print(relationDictionary)
