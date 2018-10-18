@@ -3,6 +3,11 @@ relationDictionary = {}
 index = 1
 relation = []
 
+father = False
+mother = False
+grandFather = False
+son = False
+
 
 def addUser(name="", gender="", index=""):
     ID = name.lower() + str(index);
@@ -11,28 +16,31 @@ def addUser(name="", gender="", index=""):
 
 
 def queryInfo(id, who):
-    userName = userDictionary[id]
-    relation = relationDictionary[id]
+    try:
+        userName = userDictionary[id]
+        relation = relationDictionary[id]
 
-    if who == "f":
-        nameID = relation[0]
-        name = userDictionary[nameID][0]
-    elif who == "m":
-        nameID = relation[1]
-        name = userDictionary[nameID][0]
+        if who == "f":
+            nameID = relation[0]
+            name = userDictionary[nameID][0]
+        elif who == "m":
+            nameID = relation[1]
+            name = userDictionary[nameID][0]
 
-    elif who == 'g':
-        nameID = relation[2]
-        name = userDictionary[nameID][0]
+        elif who == 'g':
+            nameID = relation[2]
+            name = userDictionary[nameID][0]
 
-    elif who == 's':
-        nameID = relation[3]
-        name = userDictionary[nameID][0]
+        elif who == 's':
+            nameID = relation[3]
+            name = userDictionary[nameID][0]
 
-    else:
-        pass
+        else:
+            pass
 
-    return str(userName).title(), str(name).title()
+        return str(userName).title(), str(name).title()
+    except:
+        print("Not Found")
 
 
 def updateRelation(id, who, personID):
@@ -45,6 +53,17 @@ def updateRelation(id, who, personID):
     else:
         relationDictionary[id][3] = personID
 
+
+
+def defaultRelation(userReturnId):
+    relationDictionary[userReturnId] = ["", "", "", ""]
+
+
+def relationMaker(id, rID):
+    if father:
+        relationDictionary[id] = ["", "", "", rID]
+    if mother:
+        relationDictionary[id] = ["", "", "", rID]
 
 def allInfo():
     print(userDictionary)
@@ -91,7 +110,7 @@ if __name__ == "__main__":
                 relationDictionary[grandFatherReturnID] = ["", "", "", fatherReturnID]
 
             else:
-                pass
+                defaultRelation(userReturnId)
 
             newOne = input("Add Info or Query or Update? (A/Q/U): ")
             if newOne.lower() == 'a':
@@ -127,12 +146,27 @@ if __name__ == "__main__":
             allInfo()
             searchingUserId = input("Enter Your userID: ")
             whichOne = input("Which One you want to update? Father, Mother, GrandFather or son?  (F/M/G/S): ")
+            if whichOne.lower() == 'f':
+                father = True
+            elif whichOne.lower() == 'm':
+                mother = True
+            elif whichOne.lower() == 'g':
+                grandFather = True
+            elif whichOne.lower() == 's':
+                son = True
             personName = input("Enter Name: ")
             personReturnID = addUser(personName, whichOne, index)
             index = index + 1
 
             updateRelation(searchingUserId.lower(), whichOne.lower(), personReturnID)
+
+            relationMaker(personReturnID, searchingUserId)
+            father = False
+            mother = False
+            grandFather = False
+            son = False
             print("OK , successfully update!")
+
         else:
             pass
 
